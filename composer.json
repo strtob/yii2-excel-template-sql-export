@@ -1,0 +1,19 @@
+{
+    "name": "strtob/yii2-excel-template-sql-export",
+    "description": "Yii2 module to manage sql commands, which can be export in one MS Excel worksheet",
+    "type": "yii2-extension",
+    "require": {
+        "phpoffice/phpspreadsheet": "^3.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "strtob\\yii2ExcelTemplateSqlExport\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Tobias Streckel"
+        }
+    ]
+}
