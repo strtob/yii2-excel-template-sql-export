@@ -12,6 +12,8 @@ The **Yii2 Excel Template SQL Export** module allows you to export the results o
 - Exception handling for graceful error responses.
 - GUI for easy management of SQL queries, including adding, editing, and deleting queries.
 
+![](https://github.com/strtob/yii2-excel-template-sql-export/blob/main/Screenshot.png)
+
 ## Installation
 
 To install this module, follow these steps:
