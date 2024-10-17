@@ -21,5 +21,14 @@ To install this module, follow these steps:
 1. **Add the module to your project**:
    Use Composer to install the module. Run the following command in your terminal:
 
-   ```bash
+```bash
    composer require strtob/yii2-excel-template-sql-export
+```
+and adjust your config
+
+```bash
+ 'modules' => [
+        'export' => [
+            'class' => \strtob\yii2ExcelTemplateSqlExport\Module::class,
+        ],
+```
