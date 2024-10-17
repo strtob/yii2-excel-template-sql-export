@@ -18,12 +18,34 @@ The **Yii2 Excel Template SQL Export** module allows you to export the results o
 
 To install this module, follow these steps:
 
-1. **Add the module to your project**:
+**Add the module to your project**:
    Use Composer to install the module. Run the following command in your terminal:
 
 ```bash
    composer require strtob/yii2-excel-template-sql-export
 ```
+
+create the tables via migration
+
+```bash
+php yii migrate --migrationPath=@vendor/strtob/yii2-excel-template-sql-export/migrations
+php yii migrate
+```
+
+or
+
+```bash
+'components' => [
+    // Other components...
+    'migrator' => [
+        'class' => 'yii\db\Migration',
+        'migrationPath' => [          
+            '@vendor/strtob/yii2-excel-template-sql-export/migrations', // Add your module's migrations
+        ],
+    ],
+],
+```
+
 and adjust your config
 
 ```bash
