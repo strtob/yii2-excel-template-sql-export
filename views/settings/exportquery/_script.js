@@ -1,32 +1,38 @@
 $(document).ready(function () {
     $(document).on('click', '.executeExportQuery', function () {
-        var exportUrl = $(this).data('url');  // Base URL for export
 
+        var name = $(this).data('name');
+        var exportUrl = $(this).data('url');
+        
         // Ensure the modal element exists before proceeding
         var modalElement = document.getElementById('genericModal');
+        
         if (!modalElement) {
             console.error("Modal element not found");
             return;
         }
-
+        
         var modal = new bootstrap.Modal(modalElement);
-
+        
         // Update modal title and show loading message
         $('#genericModalLabel').text(lajax.t('Exporting Data'));
-        $('#genericModal .modal-body').html('<p><i class="fa-solid fa-download fa-fade me-2"></i>' + lajax.t('Generating file, please wait...') + '</p>');
-
+        $('#genericModal .modal-body')
+            .html('<p><i class="fa-solid fa-download fa-fade me-2"></i>'
+                + lajax.t('Generating file ' + name + ', please wait...') + '</p>');
+        
         // Show the modal
         modal.show();
-
-        // Append the record ID to the export URL as a query parameter
-        exportUrl += (exportUrl.indexOf('?') === -1 ? '?' : '');
+        
+        // Append the name as a query parameter to the export URL
+        exportUrl += (exportUrl.indexOf('?') === -1 ? '?' : '&') + 'name=' + encodeURIComponent(name);
+        
 
         // AJAX request to generate the Excel file
         $.ajax({
             url: exportUrl,
             type: 'GET',
             xhrFields: {
-                responseType: 'blob'  // Set the response type to 'blob'
+                responseType: 'blob' 
             },
             success: function (data, status, xhr) {
                 var filename = ''; // Default filename
@@ -37,7 +43,7 @@ $(document).ready(function () {
                         filename = matches[1].replace(/['"]/g, ''); // Clean up filename
                     }
                 }
-                
+
                 // Create a blob URL and initiate a download
                 var url = window.URL.createObjectURL(data);
                 var a = document.createElement('a');
@@ -46,9 +52,9 @@ $(document).ready(function () {
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-        
+
                 // Wait for 2 seconds before closing the modal
-                setTimeout(function() {
+                setTimeout(function () {
                     modal.hide(); // Close the modal after 2 seconds
                 }, 2000); // 2000ms = 2 seconds
             },
@@ -56,7 +62,7 @@ $(document).ready(function () {
                 // Check if the response is a Blob object
                 if (xhr.response instanceof Blob) {
                     var reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = function (event) {
                         var result = event.target.result;
                         try {
                             // Try to parse the response as JSON
@@ -65,7 +71,7 @@ $(document).ready(function () {
                         } catch (e) {
                             var errorMessage = result; // If parsing fails, treat the response as plain text
                         }
-                        
+
                         // Update the modal with the error message
                         $('#genericModal .modal-body').html(
                             '<p><i class="fas fa-exclamation-triangle me-2"></i>' + lajax.t('An unexpected error occurred. Please try again.') + '</p>' +
@@ -86,11 +92,11 @@ $(document).ready(function () {
                         '</div>'
                     );
                 }
-        
+
                 // Ensure modal footer with a "Close" button is shown
                 $('#genericModal .modal-footer').html('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">' + lajax.t('Close') + '</button>').show();
-            }          
+            }
         });
-        
+
     });
 });

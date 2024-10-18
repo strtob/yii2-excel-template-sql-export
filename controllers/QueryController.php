@@ -18,7 +18,7 @@ class QueryController extends Controller
      * @param int|null $tbl_export_id Optional ID to filter queries.
      * @return Response
      */
-    public function actionExcel($id = null, $export_id = null)
+    public function actionExcel($name = 'data', $id = null, $export_id = null)
     {
         try {
             // Fetch SQL queries based on the parameters
@@ -40,7 +40,7 @@ class QueryController extends Controller
             }
 
             // Save the Excel file to a temporary location
-            $tempFilePath = $this->saveToTempFile($spreadsheet);
+            $tempFilePath = $this->saveToTempFile($spreadsheet, $name);
 
             // Use Yii2's sendFile method to send the file to the user
             return Yii::$app->response->sendFile($tempFilePath, basename($tempFilePath))->send();
@@ -161,9 +161,9 @@ class QueryController extends Controller
      * @param Spreadsheet $spreadsheet
      * @return string
      */
-    protected function saveToTempFile($spreadsheet)
+    protected function saveToTempFile($spreadsheet, $name)
     {
-        $filename = 'exported_data_' . date('d-m-Y_H-i-s') . '.xlsx';
+        $filename = date('Y-m-d_H-i-s') . '_' .$name . '.xlsx';
         $tempFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename; // Path to save the temporary file
 
         // Write the Excel file to the temporary location

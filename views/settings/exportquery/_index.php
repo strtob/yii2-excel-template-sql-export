@@ -80,6 +80,7 @@ use yii\widgets\Pjax;
                                                 'class' => 'btn btn-primary executeExportQuery none-icon',
                                                 'style' => 'cursor: pointer; align-items: center;',
                                                 'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'id' => $model->id], true),
+                                                'data-name' => $model->tblExport->name,
                                         ]
                                 );
                         },
@@ -129,7 +130,7 @@ use yii\widgets\Pjax;
         $btCreateTitle = Yii::t('app', 'Add Query');
         $btCreate = Html::tag(
                 'span',
-                '<i class="ri-add-line align-bottom"></i> ' . $btCreateTitle,
+                $btCreateTitle,
                 [
                         'title' => $btCreateTitle,
                         'class' => 'showModal btn btn-success my-0 mr-2',
@@ -138,7 +139,7 @@ use yii\widgets\Pjax;
                         'data-url' => \yii\helpers\Url::to(['create-export-query', 'id' => $model->id], true),
                         'data-bs-target' => 'modal-xl',
                         'data-target-title' => '<i class="ri-pencil-fill align-bottom"></i> ' . Yii::t('app', 'Create'),
-                        'data-ajaxcontainer' => '#pjax-container-export-query',
+                        'data-ajaxcontainer' => '#pjax-container-export-query',                       
                 ],
         );
 
@@ -152,6 +153,7 @@ use yii\widgets\Pjax;
                         'style' => 'cursor: pointer;',
                         // Adjusted to include tbl_export_id
                         'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'export_id' => $model->id], true),
+                        'data-name' => $model->name,
                 ]
         );
 
