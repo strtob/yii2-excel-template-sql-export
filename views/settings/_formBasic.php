@@ -1,5 +1,6 @@
 <?php
 
+use app\models\File;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -47,6 +48,19 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
         </div>
+
+
+        <div class="col-xxl-6 col-md-6 col-sm-12">
+
+                <?= $form->field($model, 'tbl_template_file')->widget(\kartik\widgets\Select2::classname(), [
+                    'data' => \yii\helpers\ArrayHelper::map(File::find()->orderBy('id')->all(), 'id', 'tblFile.name'),
+                    'options' => ['placeholder' => 'Choose...'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]); ?>
+
+            </div>
 
         <div class="col-xxl-6 col-md-6 col-sm-12">
 

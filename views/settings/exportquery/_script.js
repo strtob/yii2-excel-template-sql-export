@@ -13,7 +13,7 @@ $(document).ready(function () {
 
         // Update modal title and show loading message
         $('#genericModalLabel').text(lajax.t('Exporting Data'));
-        $('#genericModal .modal-body').html('<p>' + lajax.t('Generating file, please wait...') + '</p>');
+        $('#genericModal .modal-body').html('<p><i class="fa-solid fa-download fa-fade me-2"></i>' + lajax.t('Generating file, please wait...') + '</p>');
 
         // Show the modal
         modal.show();
@@ -29,7 +29,6 @@ $(document).ready(function () {
                 responseType: 'blob'  // Set the response type to 'blob'
             },
             success: function (data, status, xhr) {
-                // Get the filename from the response headers
                 var filename = ''; // Default filename
                 var disposition = xhr.getResponseHeader('Content-Disposition');
                 if (disposition && disposition.indexOf('attachment') !== -1) {
@@ -47,23 +46,51 @@ $(document).ready(function () {
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-
+        
                 // Wait for 2 seconds before closing the modal
                 setTimeout(function() {
                     modal.hide(); // Close the modal after 2 seconds
                 }, 2000); // 2000ms = 2 seconds
             },
             error: function (xhr, status, error) {
-                // On unexpected errors
-                $('#genericModal .modal-body').html(
-                    '<p>' + lajax.t('An unexpected error occurred. Please try again.') + '</p>' +
-                    '<div class="scrollable-error" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f8d7da; color: #721c24;">' +
-                    '<strong>Error Details:</strong><br>' + 
-                    (xhr.responseText || "No additional error details available.") + // Show detailed error response if available
-                    '</div>'
-                );
-                $('#modal-footer').show(); // Show footer with Close button
-            }
+                // Check if the response is a Blob object
+                if (xhr.response instanceof Blob) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var result = event.target.result;
+                        try {
+                            // Try to parse the response as JSON
+                            var jsonResponse = JSON.parse(result);
+                            var errorMessage = jsonResponse.message || lajax.t('No additional error details available.');
+                        } catch (e) {
+                            var errorMessage = result; // If parsing fails, treat the response as plain text
+                        }
+                        
+                        // Update the modal with the error message
+                        $('#genericModal .modal-body').html(
+                            '<p><i class="fas fa-exclamation-triangle me-2"></i>' + lajax.t('An unexpected error occurred. Please try again.') + '</p>' +
+                            '<div class="scrollable-error" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f8d7da; color: #721c24;">' +
+                            '<strong>' + lajax.t('Error Details:') + '</strong><br>' +
+                            errorMessage +  // Show the parsed or raw error message
+                            '</div>'
+                        );
+                    };
+                    reader.readAsText(xhr.response); // Read the Blob content as text
+                } else {
+                    // Fallback for non-Blob errors
+                    $('#genericModal .modal-body').html(
+                        '<p><i class="fas fa-exclamation-triangle me-2"></i>' + lajax.t('An unexpected error occurred. Please try again.') + '</p>' +
+                        '<div class="scrollable-error" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f8d7da; color: #721c24;">' +
+                        '<strong>' + lajax.t('Error Details:') + '</strong><br>' +
+                        (xhr.responseText || lajax.t('No additional error details available.')) +
+                        '</div>'
+                    );
+                }
+        
+                // Ensure modal footer with a "Close" button is shown
+                $('#genericModal .modal-footer').html('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">' + lajax.t('Close') + '</button>').show();
+            }          
         });
+        
     });
 });

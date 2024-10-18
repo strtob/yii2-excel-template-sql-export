@@ -34,24 +34,6 @@ use strtob\yii2ExcelTemplateSqlExport\models\Export;
             'contentOptions' => ['class' => 'id'],
             'visible' => false,
         ],
-
-        [
-            'attribute' => 'mandate',
-            'label' => yii::t('app',  'Mandate'),
-          
-            'value' => function ($model) {
-                /* @var $model app\models */
-                return $model->tblMandate->tblCompany->name;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(Export::find()->all(), 'id', 'tblMandate.name'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => '(Filter)', 'id' => 'grid-export-search-tbl_export_id']
-        ],
-
-
         [
             'attribute' => 'status',                
             'label' => yii::t('app', 'Status'), 
@@ -69,6 +51,22 @@ use strtob\yii2ExcelTemplateSqlExport\models\Export;
                 return $r;
             },
         ],
+
+        [
+            'attribute' => 'mandate',
+            'label' => yii::t('app',  'Mandate'),
+          
+            'value' => function ($model) {
+                /* @var $model app\models */
+                return $model->tblMandate->tblCompany->name;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(Export::find()->all(), 'id', 'tblMandate.name'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => '(Filter)', 'id' => 'grid-export-search-tbl_export_id']
+        ],        
 
         [
             'class' => 'yii\grid\ActionColumn',

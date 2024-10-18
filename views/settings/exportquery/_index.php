@@ -43,13 +43,13 @@ use yii\widgets\Pjax;
                 ],
                 [
                         'attribute' => 'sheet_name',
-    
+
                         'value' => function ($model) {
-                            /* @var $model \app\models */
-    
-                            return $model->sheet_name;
+                                /* @var $model \app\models */
+
+                                return $model->sheet_name;
                         },
-                    ],
+                ],
                 [
                         'attribute' => 'query',
                         'value' => function ($model) {
@@ -64,7 +64,6 @@ use yii\widgets\Pjax;
                                 return $model->parameter;
                         },
                 ],
-
                 [
                         'attribute' => 'btExecuteQuery',
                         'label' => '',
@@ -79,22 +78,22 @@ use yii\widgets\Pjax;
                                         '<i class="fas fa-database me-1"></i> ' . $btExecuteQueryTitle,
                                         [
                                                 'class' => 'btn btn-primary executeExportQuery none-icon',
-                                                'style' => 'cursor: pointer;',
-                                                'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'id' => $model->id], true),                                              
+                                                'style' => 'cursor: pointer; align-items: center;',
+                                                'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'id' => $model->id], true),
                                         ]
                                 );
                         },
-
                 ],
-                [
-                        'attribute' => 'description',
-                        'value' => function ($model) {
-                                /* @var $model \app\models */
-                                return $model->description;
-                        },
-                ],
+                // [
+                //         'attribute' => 'description',
+                //         'value' => function ($model) {
+                //                 /* @var $model \app\models */
+                //                 return $model->description;
+                //         },
+                // ],
                 [
                         'attribute' => 'order_by',
+                        'label' => Yii::t('app', 'Order'),
                         'value' => function ($model) {
                                 /* @var $model \app\models */
                                 return $model->order_by;
@@ -112,7 +111,7 @@ use yii\widgets\Pjax;
                                                 'style' => 'cursor: pointer',
                                                 'data-title' => \Yii::t('app', 'Delete') . ' #' . $model->id,
                                                 'data-url' => \yii\helpers\Url::to(['delete-export-query'], true),
-                                                'data-method' => 'GET',                                               
+                                                'data-method' => 'GET',
                                                 'data-parameter' => 'id=' . $model->id,
                                                 'data-confirmbtnclass' => 'btn-danger',
                                                 'data-promptMessage' => \Yii::t('app', 'Do you really want to delete entry {id}', ['id' => ' #' . $model->id]),
@@ -148,14 +147,14 @@ use yii\widgets\Pjax;
                 'span',
                 '<i class="fas fa-database me-1"></i> ' . $btExecuteQueryTitle,
                 [
-                    'title' => $btExecuteQueryTitle,
-                    'class' => 'btn btn-primary my-0 mr-2 none-icon executeExportQuery',
-                    'style' => 'cursor: pointer;',
-                    // Adjusted to include tbl_export_id
-                    'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'export_id' => $model->id], true),
+                        'title' => $btExecuteQueryTitle,
+                        'class' => 'btn btn-primary my-0 mr-2 none-icon executeExportQuery',
+                        'style' => 'cursor: pointer;',
+                        // Adjusted to include tbl_export_id
+                        'data-url' => \yii\helpers\Url::to(['/export/query/excel', 'export_id' => $model->id], true),
                 ]
-            );
-            
+        );
+
 
 
 
@@ -214,14 +213,14 @@ use yii\widgets\Pjax;
 // load javascript
 // ********************
 $options                       = [
-    'listLoaded' => Yii::t('app', 'Loaded successfully.'),
+        'listLoaded' => Yii::t('app', 'Loaded successfully.'),
 ];
 
 $this->registerJs(
         $this->render(
                 '_script.js',
                 [
-                    'position' => \yii\web\View::POS_READY
+                        'position' => \yii\web\View::POS_READY
                 ]
         )
 );

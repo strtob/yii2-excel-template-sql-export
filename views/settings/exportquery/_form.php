@@ -58,34 +58,45 @@ use strtob\yii2ExcelTemplateSqlExport\models\Export;
 
             <div class="col-xxl-12 col-md-12 col-sm-12">
 
-                <?= $form->field($model, 'query')->textarea(['rows' => 6]) ?>
+                <?= $form->field($model, 'query')->textarea(['rows' => 6])
+                 ->label(
+                    yii::t('app', 'Query') .' <code>' .  yii::t('app', '(set variables with :variable_name)')  . '</code>'
+                ) ?>
 
             </div>
+
+
+
 
             <div class="col-xxl-12 col-md-12 col-sm-12">
 
-                <?= $form->field($model, 'parameter')->textarea(['rows' => 2]) ?>
+                <div class="row">
 
+
+                    <div class="col-xxl-4 col-md-4 col-sm-12">
+
+                        <?= $form->field($model, 'parameter')->textarea(['rows' => 12]) ?>
+
+                        
+                    </div>
+
+                    <div class="col-xxl-8 col-md-8 col-sm-12">
+
+                        <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+
+
+                        <?= $form->field($model, 'order_by')->widget(kartik\widgets\RangeInput::classname(), [
+                            'options'      => ['placeholder' => '(0 - 100)...'],
+                            'html5Options' => ['min' => 0, 'max' => 100],
+                            'addon'        => ['append' => ['content' => '<i class="fas fa-list"></i>']]
+                        ]) ?>
+
+                    </div>
+                </div>
             </div>
-
-            <div class="col-xxl-6 col-md-6 col-sm-12">
-
-                <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
-
-            </div>
-
-            <div class="col-xxl-6 col-md-6 col-sm-12">
-
-                <?= $form->field($model, 'order_by')->widget(kartik\widgets\RangeInput::classname(), [
-                    'options'      => ['placeholder' => '(0 - 100)...'],
-                    'html5Options' => ['min' => 0, 'max' => 100],
-                    'addon'        => ['append' => ['content' => '<i class="fas fa-list"></i>']]
-                ]) ?>
-
-            </div>
-
-
         </div>
+
+
     </div>
 
     <div class="form-group mb-2">
@@ -96,3 +107,21 @@ use strtob\yii2ExcelTemplateSqlExport\models\Export;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+// ####################
+// load javascript
+// ********************
+$options                       = [
+    'listLoaded' => Yii::t('app', 'Loaded successfully.'),
+];
+
+$this->registerJs(
+    $this->render(
+        '_form.js',
+        [
+            'position' => \yii\web\View::POS_READY
+        ]
+    )
+);
+?>

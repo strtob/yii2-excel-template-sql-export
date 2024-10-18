@@ -2,6 +2,7 @@
 namespace strtob\yii2ExcelTemplateSqlExport\controllers;
 
 use Yii;
+use yii\helpers\Json;
 use yii\web\Response;
 use yii\web\Controller;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -45,7 +46,11 @@ class QueryController extends Controller
             return Yii::$app->response->sendFile($tempFilePath, basename($tempFilePath))->send();
         } catch (\Exception $e) {
             // Handle any exceptions that may occur
-            return $this->asJson(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
+            return $this->asJson([
+                    'success' => false, 
+                    'message' => 'An error occurred: ' . $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
         }
     }
 
@@ -86,7 +91,14 @@ class QueryController extends Controller
         $worksheet->setTitle($sheetName); // Set the name of the sheet
 
         $sql = $query->query;
-        $data = $this->executeQuery($sql);
+        $parameter = json_decode($query->parameter, true);
+
+        
+        if (!is_null($parameter) && json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('JSON decoding error: ' . json_last_error_msg());
+        }
+
+        $data = $this->executeQuery($sql, $parameter);
 
         if (!empty($data)) {
             // Write column titles in the first row
@@ -114,10 +126,34 @@ class QueryController extends Controller
      * @param string $sql
      * @return array
      */
-    protected function executeQuery($sql)
+    protected function executeQuery($sql, $parameter)
     {
-        return Yii::$app->db->createCommand($sql)->queryAll();
+        
+        // Create a command and bind parameters
+        $command = Yii::$app->db->createCommand($sql);
+    
+        // Check if $parameter is an array
+        if (is_array($parameter)) {
+            foreach ($parameter as $key => $paramDetails) {
+                // Check if the current paramDetails contains 'parameter' and 'example'
+                if (isset($paramDetails['parameter']) && isset($paramDetails['example'])) {
+                    // Bind only if the parameter is found in the SQL string
+                    if (strpos($sql, $paramDetails['parameter']) !== false) {
+                        $command->bindValue($paramDetails['parameter'], $paramDetails['example']);
+                    }
+                }
+            }
+        } 
+        elseif (!is_null($parameter)) {
+            // Handle the case where $parameter is not an array
+            throw new \InvalidArgumentException('Expected parameter to be an array, ' . gettype($parameter) . ' given.');
+        }
+    
+        // Execute the command and return the results
+        return $command->queryAll();
     }
+    
+    
 
     /**
      * Saves the Spreadsheet object to a temporary file and returns the file path.

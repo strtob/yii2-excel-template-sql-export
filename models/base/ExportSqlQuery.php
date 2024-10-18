@@ -111,7 +111,7 @@ class ExportSqlQuery extends \yii\db\ActiveRecord
             'isActive' => Yii::t('app', 'Is Active'),
             'query' => Yii::t('app', 'Query'),
             'sheet_name' => Yii::t('app', 'Sheet Name'),
-            'parameter' => Yii::t('app', 'Parameter'),
+            'parameter' => Yii::t('app', 'Parameter'),            
             'description' => Yii::t('app', 'Description'),
             'order_by' => Yii::t('app', 'Order By'),
             'db_lock' => Yii::t('app', 'Db Lock'),
