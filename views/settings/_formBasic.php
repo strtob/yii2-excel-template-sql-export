@@ -1,8 +1,10 @@
 <?php
 
-use app\models\File;
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\widgets\FileInput;
+use strtob\yii2Filemanager\models\File;
 
 /* generator base: _formBasic.php */
 /* @var $this yii\web\View */
@@ -52,15 +54,25 @@ use yii\widgets\ActiveForm;
 
         <div class="col-xxl-6 col-md-6 col-sm-12">
 
-                <?= $form->field($model, 'tbl_template_file')->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(File::find()->orderBy('id')->all(), 'id', 'tblFile.name'),
-                    'options' => ['placeholder' => 'Choose...'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
+            <?= $form->field($model, 'template_tbl_file_id')
+                ->widget(\strtob\yii2Filemanager\widgets\FileSelectionInputWidget::class, [
+                    'prependContent' => '<i class="fa-regular fa-file-excel me-2"></i>'
+                        . 'MS Excel',
+                ]) ?>
 
-            </div>
+
+        </div>
+
+        <div class="col-xxl-6 col-md-6 col-sm-12">
+
+
+            <?= $form->field($model, 'presentation_tbl_file_id')
+                ->widget(\strtob\yii2Filemanager\widgets\FileSelectionInputWidget::class, [
+                    'prependContent' => '<i class="fa-regular fa-file-powerpoint me-2"></i>'
+                        . 'MS Powerpoint'
+                ]) ?>
+
+        </div>
 
         <div class="col-xxl-6 col-md-6 col-sm-12">
 
@@ -71,8 +83,6 @@ use yii\widgets\ActiveForm;
             ]) ?>
 
         </div>
-
-
 
 
     </div>

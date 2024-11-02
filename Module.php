@@ -1,11 +1,8 @@
 <?php
 
-
 namespace strtob\yii2ExcelTemplateSqlExport;
 
-use yii\base\Module as BaseModule;
-
-class Module extends BaseModule
+class Module extends \yii\base\Module
 {
     /**
      * @var string The namespace for the module's controllers.

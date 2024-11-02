@@ -35,9 +35,6 @@ class SettingsController extends Controller
      */
     public function actionIndex()
     {
-
-
-
         $searchModel = new \strtob\yii2ExcelTemplateSqlExport\models\ExportSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

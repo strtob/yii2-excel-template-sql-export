@@ -2,9 +2,11 @@
 
 namespace strtob\yii2ExcelTemplateSqlExport\models\base;
 
+
 use Yii;
-use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use strtob\yii2Filemanager\models\File;
 
 /**
  * This is the base model class for table "tbl_export".
@@ -13,6 +15,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $parent_id
  * @property string $name
  * @property string $description
+ * @property integer $template_tbl_file_id
+ * @property integer $presentation_tbl_file_id
  * @property integer $order_by
  * @property string $created_at
  * @property integer $created_by
@@ -22,10 +26,11 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $deleted_by
  * @property integer $db_lock
  *
-* @property \app\file\File\File $tblTemplateFile
-* @property \app\export\ExportHasMandate\ExportHasMandate[] $exportHasMandates
-* @property \app\export\ExportSqlQuery\ExportSqlQuery[] $exportSqlQueries
-*/
+ * @property \app\file\File\File $templateTblFile
+ * @property \app\file\File\File $presentationTblFile
+ * @property \app\export\ExportHasMandate\ExportHasMandate[] $exportHasMandates
+ * @property \app\export\ExportSqlQuery\ExportSqlQuery[] $exportSqlQueries
+ */
 class Export extends \yii\db\ActiveRecord
 {
     use \mootensai\relation\RelationTrait;
@@ -56,6 +61,8 @@ class Export extends \yii\db\ActiveRecord
     public function relationNames()
     {
         return [
+            'templateTblFile',
+            'presentationTblFile',
             'exportHasMandates',
             'exportSqlQueries'
         ];
@@ -67,8 +74,8 @@ class Export extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parent_id', 'order_by', 'created_by', 'updated_by', 'deleted_by', 'db_lock'], 'integer'],
-            [['name', 'description'], 'required'],
+            [['parent_id', 'template_tbl_file_id', 'presentation_tbl_file_id', 'order_by', 'created_by', 'updated_by', 'deleted_by', 'db_lock'], 'integer'],
+            [['name'], 'required'],
             [['description'], 'string'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
@@ -107,27 +114,35 @@ class Export extends \yii\db\ActiveRecord
             'parent_id' => Yii::t('app', 'Parent'),
             'name' => Yii::t('app', 'Name'),
             'description' => Yii::t('app', 'Description'),
+            'template_tbl_file_id' => Yii::t('app', 'Excel Template File'),
+            'presentation_tbl_file_id' => Yii::t('app', 'Powerpoint Presentation File'),
             'order_by' => Yii::t('app', 'Order By'),
             'db_lock' => Yii::t('app', 'Db Lock'),
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTemplateTblFile()
+    {
+        return $this->hasOne(File::className(), ['id' => 'template_tbl_file_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTblTemplateFile()
+    public function getPresentationTblFile()
     {
-        return $this->hasOne(\app\models\File::className(), ['id' => 'tbl_template_file']);
+        return $this->hasOne(File::className(), ['id' => 'presentation_tbl_file_id']);
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getExportHasMandates()
     {
-        return $this->hasMany(\strtob\yii2ExcelTemplateSqlExport\models\ExportHasMandate::className(), ['tbl_export_id' => 'id']);
+        return $this->hasMany(ExportHasMandate::className(), ['tbl_export_id' => 'id']);
     }
 
     /**
@@ -135,7 +150,7 @@ class Export extends \yii\db\ActiveRecord
      */
     public function getExportSqlQueries()
     {
-        return $this->hasMany(\strtob\yii2ExcelTemplateSqlExport\models\ExportSqlQuery::className(), ['tbl_export_id' => 'id']);
+        return $this->hasMany(ExportSqlQuery::className(), ['tbl_export_id' => 'id']);
     }
 
     /**
@@ -158,6 +173,15 @@ class Export extends \yii\db\ActiveRecord
             ],
 
 
+            'mandate' => [
+                'class' => \app\components\behaviors\MandateBehavior::class,
+                'mandateAttribute' => 'tbl_mandate_id',
+            ],
+            'ip' => [
+                'class' => \app\components\behaviors\IpBehavior::class,
+                'createIpAttribute' => 'created_ip',
+                'updateIpAttribute' => 'updated_ip',
+            ],
         ];
     }
 
@@ -185,11 +209,11 @@ class Export extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return \strtob\yii2ExcelTemplateSqlExport\ExportQuery the active query used by this AR class.
+     * @return \app\models\ExportQuery the active query used by this AR class.
      */
     public static function find()
     {
-        $query = new \strtob\yii2ExcelTemplateSqlExport\models\ExportQuery(get_called_class());
+        $query = new \app\models\ExportQuery(get_called_class());
         $query->where([
             'tbl_export.deleted_by' => NULL,
         ]);
