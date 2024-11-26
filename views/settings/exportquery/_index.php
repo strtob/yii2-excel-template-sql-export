@@ -21,7 +21,7 @@ use yii\widgets\Pjax;
 
         <div class="d-flex align-items-center mb-3">
                 <h5 class="flex-grow-1 fs-16 mb-0 text-primary">
-                        <i class="fa-solid fa-book me-1"></i> <span class="form-title"><?= Yii::t('app', 'Query') ?></span>
+                        <i class="fa-solid fa-database me-1"></i> <span class="form-title"><?= Yii::t('app', 'Query') ?></span>
                 </h5>
         </div>
 
@@ -157,6 +157,20 @@ use yii\widgets\Pjax;
                 ]
         );
 
+        $btGeneratePdfTitle = Yii::t('app', 'Generate PDF');
+        $btGeneratePdf = Html::tag(
+                'span',
+                '<i class="fa-regular fa-file-pdf me-1"></i> ' . $btGeneratePdfTitle,
+                [
+                        'title' => $btGeneratePdfTitle,
+                        'class' => 'btn btn-danger my-0 mr-2 none-icon executeExportQuery',
+                        'style' => 'cursor: pointer;',
+                        // Adjusted to include tbl_export_id
+                        'data-url' => \yii\helpers\Url::to(['/export/query/pdf', 'export_id' => $model->id], true),
+                        'data-name' => $model->name,
+                ]
+        );
+
 
 
 
@@ -204,7 +218,7 @@ use yii\widgets\Pjax;
                 'showFooter' => false,
                 'pjax' => true,
                 'pjaxSettings' => ['options' => ['id' => 'pjax-container-export-query']],
-                'toolbar' => [$btCreate, $btExecuteQuery],
+                'toolbar' => [$btCreate, $btExecuteQuery, $btGeneratePdf],
         ]); ?>
 
 </div>

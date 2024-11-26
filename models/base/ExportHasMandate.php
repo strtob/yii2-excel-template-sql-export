@@ -180,14 +180,7 @@ class ExportHasMandate extends \yii\db\ActiveRecord
             'tbl_export_has_mandate.deleted_by' => NULL,
         ]);
 
-        // Check if the user has the 'mandates_see_all' permission
-        if (!\Yii::$app->user->can('mandates_see_all')) {
-            // If the user doesn't have the permission, apply the filter by tbl_mandate_id
-            $query->andWhere([
-                'tbl_mandate_id' => \Yii::$app->user->identity->tbl_mandate_id,
-            ]);
-        }
-
+       
         return $query;
     }
 }

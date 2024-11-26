@@ -3,7 +3,8 @@
     "description": "Yii2 module to manage sql commands, which can be export in one MS Excel worksheet",
     "type": "yii2-extension",
     "require": {
-        "phpoffice/phpspreadsheet": "^3.3"
+        "phpoffice/phpspreadsheet": "^3.3",
+        "mootensai/yii2-enhanced-gii": "dev-master"
     },
     "license": "MIT",
     "autoload": {
